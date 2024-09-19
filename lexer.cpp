@@ -30,16 +30,16 @@ enum class TokenType
 
 
     
-}
+};
 
 struct Token
 {
     TokenType type;
     int intValue;
-    String stringValue;
-}
+    string stringValue;
+};
 
 class Lexer
 {
 
-}
+};
