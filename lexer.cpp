@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 
 enum class TokenType
 {
@@ -32,7 +33,7 @@ enum class TokenType
     
 };
 
-struct Token
+class Token
 {
     TokenType type;
     int intValue;
@@ -41,5 +42,10 @@ struct Token
 
 class Lexer
 {
+    vector<Token> lex()
+    {
+        vector<Token> TokensStream;
 
+        return TokensStream;   
+    };
 };
