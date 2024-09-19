@@ -28,9 +28,6 @@ enum class TokenType
     LESSTHAN,
     MORETHAN,
 
-
-
-    
 };
 
 class Token
