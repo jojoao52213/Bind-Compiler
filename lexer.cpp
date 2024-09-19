@@ -1,23 +1,27 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 #include <vector>
+
+using namespace std;
 
 enum class TokenType
 {
     SEMI,
 
-    VARNAME,
+    VAR_NAME,
 
-    INTLIT,
-    INTDEF,
+    INT_LIT,
+    INT_DEF,
 
-    FLOATLIT,
-    FLOATDEF,
+    FLOAT_LIT,
+    FLOAT_DEF,
 
-    CHARLIT,
-    CHARDEF,
+    CHAR_LIT,
+    CHAR_DEF,
 
-    BOOLLIT,
-    BOOLDEF,
+    BOOL_LIT,
+    BOOL_DEF,
 
     RETURN,
     IF,
@@ -25,24 +29,20 @@ enum class TokenType
     FOR,
 
     EQU,
-    LESSTHAN,
-    MORETHAN,
+    LESS_THAN,
+    MORE_THAN,
 
 };
 
-class Token
+struct Token
 {
     TokenType type;
-    int intValue;
-    string stringValue;
+    string value;
 };
 
-class Lexer
+vector<Token> lex(string text)
 {
-    vector<Token> lex()
-    {
-        vector<Token> TokensStream;
+    vector<Token> TokensStream;
 
-        return TokensStream;   
-    };
+    return TokensStream;   
 };
