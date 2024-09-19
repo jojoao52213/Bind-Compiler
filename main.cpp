@@ -1,18 +1,33 @@
 #include <iostream>
-#include <lexer.cpp>
+#include <fstream>
+#include <string>
+#include <vector>
+#include "lexer.cpp"
 
 using namespace std;
 
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
-    string filePath;
-
-    if(argc > 0)
+    if (argc > 1)
     {
-        filePath = argv[1];
-    }
-    
-    cout << filePath;
+        string filePath = argv[1];
 
- return 0;
+        string line;
+        string text;
+
+        ifstream file;
+        file.open(filePath);
+
+        while (getline(file, line))
+        {
+            text += line += "\n";
+        };
+
+        cout << text;
+        vector<Token> TokensStream;
+
+        TokensStream = lex(text);
+    }
+
+    return 0;
 }
