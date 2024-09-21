@@ -15,18 +15,27 @@ int main(int argc, char *argv[])
         string line;
         string text;
 
-        ifstream file;
-        file.open(filePath);
+        ifstream file(filePath);
+        
 
         while (getline(file, line))
         {
             text += line += "\n";
         };
+        file.close();
 
-        cout << text;
         vector<Token> TokensStream;
 
         TokensStream = lex(text);
+        cout << "Compiling success" << "\n";
+
+        ofstream lexerOUT("lexer.out", std::ios::out | std::ios::trunc);
+
+        for(auto& token : TokensStream)
+        {          
+            string tp = TokenTypeToString(token.type);
+            lexerOUT << tp;
+        };
     }
 
     return 0;
