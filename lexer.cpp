@@ -5,34 +5,41 @@
 
 using namespace std;
 
-enum class TokenType
+enum ExpectedToken
 {
-    SEMI,
+    INDENTIFIER,
+    EXPECTING_SEMI,
+};
 
-    VAR_NAME,
+enum TokenType
+{
+    _NULL,
+
+    VAR_DEF,
 
     INT_LIT,
     INT_DEF,
-
-    FLOAT_LIT,
-    FLOAT_DEF,
-
-    CHAR_LIT,
-    CHAR_DEF,
-
-    BOOL_LIT,
-    BOOL_DEF,
-
-    RETURN,
-    IF,
-    WHILE,
-    FOR,
-
-    EQU,
-    LESS_THAN,
-    MORE_THAN,
-
+    
+    FUNC_DEF,
 };
+
+string TokenTypeToString(TokenType type)
+{
+    switch (type)
+    {
+    case _NULL:
+        return "_NULL";
+    case VAR_DEF:
+        return "VAR_DEF";
+    case INT_LIT:
+        return "INT_LIT";
+    case INT_DEF:
+        return "INT_DEF";
+    case FUNC_DEF:
+        return "FUNC_DEF";
+    break;
+    }
+}
 
 struct Token
 {
@@ -43,6 +50,24 @@ struct Token
 vector<Token> lex(string text)
 {
     vector<Token> TokensStream;
+    Token TokenBuffer;
+    TokenBuffer.type = _NULL;
+    string StringBuffer;
+    ExpectedToken expecting;
+
+    for(char CURRENT_CHAR : text)
+    {
+        StringBuffer += CURRENT_CHAR;
+        if(StringBuffer == "int")
+        {
+            TokenBuffer.type = INT_DEF;
+            TokensStream.push_back(TokenBuffer);
+            TokenBuffer.type = _NULL;
+            StringBuffer = "";
+            expecting = INDENTIFIER;
+        };
+
+    };  
 
     return TokensStream;   
 };
