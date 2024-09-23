@@ -10,7 +10,6 @@ enum ExpectedToken
     __NULL,
 
     _INDENTIFIER,
-    _SEMI,
 
     _OPEN_PARENTHESES,
     _CLOSE_PARENTHESES,
@@ -19,18 +18,32 @@ enum ExpectedToken
 
 enum TokenType
 {
+    SEMI,
+
     OPEN_CURLY_BRACKETS,
     CLOSE_CURLY_BRACKETS,
+
     OPEN_PARENTHESES,
     CLOSE_PARENTHESES,
+
     EQU,
 
     _NULL,
 
     INDENTIFIER,
 
+    RETURN,
+
     INT_LIT,
     INT_DEF,
+};
+
+bool IsInt(char c)
+{
+    if (c >= '0' && c <= '9')
+        return true;
+    else
+        return false;
 };
 
 string TokenTypeToString(TokenType type)
@@ -55,9 +68,13 @@ string TokenTypeToString(TokenType type)
         return "OPEN_CURLY_BRACKETS ";
     case CLOSE_CURLY_BRACKETS:
         return "CLOSE_CURLY_BRACKETS ";
+    case SEMI:
+        return "SEMI ";
+    case RETURN:
+        return "RETURN ";
     default:
         return "";
-    break;
+        break;
     }
     return "";
 };
@@ -80,7 +97,7 @@ vector<Token> lex(string text)
 
     for (char c : text)
     {
-        if (c != '\t' & c != '\n' & c != ' ')
+        if (c != '\t' && c != '\n' && c != ' ')
         {
             WithOutSpaceCode += c;
         }
@@ -89,17 +106,21 @@ vector<Token> lex(string text)
     // Lexer Main part initialization
     string StringBuffer;
     ExpectedToken expected;
+
     bool IndentifierInProgress = false;
     string IndentifierBuffer;
+
+    string IntLitBuffer;
+    bool IntLitInProgress = false;
 
     // Lexer Main part
     for (char CURRENT_CHAR : WithOutSpaceCode)
     {
         StringBuffer += CURRENT_CHAR;
 
-        if(expected == _INDENTIFIER)
+        if (expected == _INDENTIFIER)
         {
-            if(IndentifierInProgress & CURRENT_CHAR != '=' & CURRENT_CHAR != '(')
+            if (IndentifierInProgress && CURRENT_CHAR != '=' && CURRENT_CHAR != '(')
             {
                 IndentifierBuffer += CURRENT_CHAR;
             }
@@ -115,13 +136,13 @@ vector<Token> lex(string text)
                 IndentifierInProgress = false;
                 expected = __NULL;
 
-                if(CURRENT_CHAR == '=')
+                if (CURRENT_CHAR == '=')
                 {
                     TokenBuffer.type = EQU;
                     TokensStream.push_back(TokenBuffer);
                     TokenBuffer.type = _NULL;
                 }
-                else if(CURRENT_CHAR == '(')
+                else if (CURRENT_CHAR == '(')
                 {
                     TokenBuffer.type = OPEN_PARENTHESES;
                     TokensStream.push_back(TokenBuffer);
@@ -132,7 +153,7 @@ vector<Token> lex(string text)
             }
         }
 
-        if(StringBuffer == "int" & expected != _INDENTIFIER)
+        if (StringBuffer == "int" && expected != _INDENTIFIER)
         {
             StringBuffer = "";
             TokenBuffer.type = INT_DEF;
@@ -142,15 +163,15 @@ vector<Token> lex(string text)
             IndentifierInProgress = true;
         }
 
-        if(StringBuffer == ")")
+        if (StringBuffer == ")")
         {
-           TokenBuffer.type = CLOSE_PARENTHESES;
-           TokensStream.push_back(TokenBuffer);
-           TokenBuffer.type = _NULL; 
-           StringBuffer = "";
+            TokenBuffer.type = CLOSE_PARENTHESES;
+            TokensStream.push_back(TokenBuffer);
+            TokenBuffer.type = _NULL;
+            StringBuffer = "";
         }
-    
-        if(StringBuffer == "{")
+
+        if (StringBuffer == "{")
         {
             TokenBuffer.type = OPEN_CURLY_BRACKETS;
             TokensStream.push_back(TokenBuffer);
@@ -158,13 +179,49 @@ vector<Token> lex(string text)
             StringBuffer = "";
         }
 
-        if(StringBuffer == "}")
+        if (StringBuffer == "}")
         {
             TokenBuffer.type = CLOSE_CURLY_BRACKETS;
             TokensStream.push_back(TokenBuffer);
             TokenBuffer.type = _NULL;
             StringBuffer = "";
         }
+
+        if (IsInt(CURRENT_CHAR))
+        {
+            IntLitInProgress = true;
+            IntLitBuffer += CURRENT_CHAR;
+            StringBuffer = "";
+        }
+
+        if (IntLitInProgress && !IsInt(CURRENT_CHAR))
+        {
+            TokenBuffer.type = INT_LIT;
+            TokenBuffer.value = IntLitBuffer;
+            TokensStream.push_back(TokenBuffer);
+            TokenBuffer.type = _NULL;
+            TokenBuffer.value = "";
+
+            IntLitInProgress = false;
+            IntLitBuffer = "";
+        }
+
+        if (StringBuffer == ";")
+        {
+            TokenBuffer.type = SEMI;
+            TokensStream.push_back(TokenBuffer);
+            TokenBuffer.type = _NULL;
+            StringBuffer = "";
+        }
+
+        if (StringBuffer == "return")
+        {
+            TokenBuffer.type = RETURN;
+            TokensStream.push_back(TokenBuffer);
+            TokenBuffer.type = _NULL;
+            StringBuffer = "";
+        }
+
     }
 
     return TokensStream;
